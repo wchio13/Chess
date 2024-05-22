@@ -9,12 +9,11 @@
 # 4 |  |  |  |  |  |  |  |  |
 # 3 |  |  |  |  |  |  |  |  |
 # 2 |WP|WP|WP|WP|WP|WP|WP|WP|
-# 1 |WR|Wk|WB|WQ|WK|WB|Wk|WR|
+# 1 |WR|Wk|WB|WK|WQ|WB|Wk|WR|
 #    A  B  C  D  E  F  G  H
 #
-import BoardHandler as bh
-
-
+import board_handler as bh
+import visuals_and_txt as vis
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
@@ -26,6 +25,6 @@ if __name__ == '__main__':
     # Print Layout
     # --Repeat while loop--
     board = bh.initialise_board()
-    print(board)
+    vis.display_board(board)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
