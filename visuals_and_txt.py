@@ -20,6 +20,14 @@ Handles all prints of the visual board and regular print prompts to the user
 
 import os
 
+piece_translations = {"R": "Rook",
+                      "k": "Knight",
+                      "B": "Bishop",
+                      "K": "King",
+                      "Q": "Queen",
+                      "P": "Pawn"}
+
+
 def display_board(board_state: dict):
     """Displays the visual state of the board given a board dictionary"""
 
@@ -72,12 +80,15 @@ def create_dynamic_board_parts(board: dict):
     return board_rep
 
 
-def message_ask_input(player: str):
+def message_piece_selection(player: str, piece: str, raw_square: str):
     """
     Print out text prompting the user to input a square on the board in order to select a piece to move
-    :param player: The player who's turn it is
+    :param raw_square: The square as it was entered via input (e.g. H6)
+    :param piece: The piece in board_state form (e.g. BR)
+    :param player: The player whose turn it is
     """
-    print(player + ": Choose a piece to move (Enter the square coordinates e.g. G7)")
+    piece = piece_translations[piece[1]]
+    print(f"{player} has selected {piece} on {raw_square}")
 
 
 def clear_screen():
