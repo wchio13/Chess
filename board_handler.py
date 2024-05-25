@@ -8,6 +8,7 @@ as dicts.
 Board states are dictionaries where each item has a key that is the position on the board as a 2-int tuple and the
 value as a string denoting the chess piece:
 e.g. (0, 1): "BR" --> Black Rook at B8
+The square A8 is the origin (0, 0)
 
 Board states contain all pieces which are 'alive' from both white and black
 """

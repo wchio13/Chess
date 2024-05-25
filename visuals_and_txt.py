@@ -20,6 +20,7 @@ Handles all prints of the visual board and regular print prompts to the user
 
 import os
 
+# Translations for piece letters
 piece_translations = {"R": "Rook",
                       "k": "Knight",
                       "B": "Bishop",
