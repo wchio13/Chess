@@ -5,6 +5,8 @@ Created: 24/05/24
 Handles and verifies input from the player, this includes the square with the piece the player selects, and the move
 that they make
 """
+from piece_moves import determine_valid_moves
+from visuals_and_txt import message_piece_selection
 
 
 def input_select_piece(player: str, board_state: dict):
@@ -13,7 +15,7 @@ def input_select_piece(player: str, board_state: dict):
     that has a piece belonging to the player
     :param player: The player's turn
     :param board_state:  The state of the board
-    :return: The selected piece, the square as it is on the board, the square as it is in board_state and a list of the pieces valid moves
+    :return: The square as it is in board_state and a list of the pieces valid moves
     """
 
     piece = None
@@ -43,7 +45,8 @@ def input_select_piece(player: str, board_state: dict):
                         print("Invalid Piece: That Piece has no possible moves")
                         piece = None
 
-    return piece, raw_square, square, valid_moves
+    message_piece_selection(player, piece, raw_square)
+    return square, valid_moves
 
 
 def input_move_to(player: str, board_state: dict, from_square: (int, int)):
@@ -90,105 +93,3 @@ def validate_input_square(square: str):
     return number, letter
 
 
-def determine_valid_moves(square: str, board_state: dict):
-    """
-    Determines the valid moves a selected piece can make
-    :param square: Square with the player-selected piece
-    :param board_state: The state of the board
-    :return: A list of valid moves the selected piece can make. Will return an empty list if there is no valid moves
-    """
-    piece = board_state[square]
-    piece_type = piece[1]  # Grab the piece type to determine movement rules
-    moves = []
-
-    # generate list of valid moves based on piece
-    if piece_type == "P":
-        moves = generate_pawn_moves(square, board_state)
-
-    return moves
-
-
-def generate_pawn_moves(square: str, board_state: dict):
-    """
-    Create a list of moves that are valid for a pawn piece at a given square with a given board state
-    Pawn movement consists of three parts:
-    1. Forward one square if nothing obstructing square (move1)
-    2. Forward two squares if nothing obstructing and pawn has not been moved yet (move2)
-    3. Diagonal forward left/right if opposing piece can be captured on those squares (move3)
-    :param square: Square where the pawn is located
-    :param board_state: State of the board
-    :return: List of moves that a pawn can make from the square given a board state
-    """
-    valid_moves = []
-    player = board_state[square][0]  # Grab first char of piece to get player colour
-    direction = get_direction(player)
-
-    row = square[0]
-    col = square[1]
-
-    # Forward one square if not obstructed
-    move1 = (row + direction, col)
-    if is_valid_square(move1) and move1 not in board_state.keys():
-        valid_moves.append(move1)
-
-    # Forward two squares if nothing obstructing and pawn has not been moved yet
-    if (row == 1 and direction == 1) or (row == 6 and direction == -1):  # Determine pawn has not moved
-        move2 = (row + direction * 2, col)
-
-        if move1 in valid_moves and move2 not in board_state.keys():  # Check both squares in front of pawn are empty
-            valid_moves.append(move2)
-
-    # Diagonal move left/right if there is opposing piece on those squares
-    move3 = [(row + direction, col + 1), (row + direction, col - 1)]
-    for move in move3:
-        if is_valid_square(move) and move in board_state.keys():  # Check there is a piece on the valid square
-            piece_on_square = board_state[move]
-
-            if get_colour(piece_on_square) == get_opponent(player):  # Check piece on square belongs to the opponent
-                valid_moves.append(move)
-    return valid_moves
-
-
-def get_opponent(player: str):
-    """
-    Helper function that gives the opposite colour of the player given.
-    :param player: Player colour as "W" or "B"
-    :return: The opposite colour of the player "W" or "B"
-    """
-    if player == "W":
-        return "B"
-    else:
-        return "W"
-
-
-def get_direction(player: str):
-    """
-    Helper function that gives the direction a pawn should move based on if they are white or black
-    :param player: Colour of player
-    :return: +1 or -1 indicating going up rows or doing down depending on colour
-    """
-    if player == "W":
-        return -1
-    else:
-        return 1
-
-
-def is_valid_square(square: (int, int)):
-    """
-    Helper function that checks given square coordinates (in board_state form -> (0, 1)) are valid
-    :param square: Board_state coordinates
-    :return: True or False if valid
-    """
-    if (-1 < square[0] < 8) and (-1 < square[1] < 8):
-        return True
-    else:
-        return False
-
-
-def get_colour(piece: str):
-    """
-    Determine the player who this piece belongs to
-    :param piece: Piece to determine ownership
-    :return: "W" if white or "B" if black
-    """
-    return piece[0]

@@ -31,7 +31,6 @@ if __name__ == '__main__':
     board_state = bh.initialise_board()
     vis.clear_screen()
     vis.display_board(board_state)
-    piece, raw_square, square, valid_moves = inp.input_select_piece(player_turn, board_state)
-    vis.message_piece_selection(player_turn, piece, raw_square)
+    square, valid_moves = inp.input_select_piece(player_turn, board_state)
 
 
