@@ -6,16 +6,15 @@ Contains all small helper functions
 """
 
 
-def get_opponent(player: str):
+def is_opponent_piece(player: str, piece: str):
     """
     Helper function that gives the opposite colour of the player given.
+    :param piece: Piece to check
     :param player: Player colour as "W" or "B"
-    :return: The opposite colour of the player "W" or "B"
+    :return: True or False if the piece belongs to opponent
     """
-    if player == "W":
-        return "B"
-    else:
-        return "W"
+
+    return player != piece[0]
 
 
 def get_direction(player: str):
@@ -42,10 +41,17 @@ def is_valid_square(square: (int, int)):
         return False
 
 
-def get_colour(piece: str):
+def has_piece(square: (int, int), board_state: dict):
     """
-    Determine the player who this piece belongs to
-    :param piece: Piece to determine ownership
-    :return: "W" if white or "B" if black
+    Determines the status of a valid square
+    :param board_state: State of the board
+    :param square: The square to check
+    :return: "W" if White piece, "B" if Black piece or None if the square has no piece
     """
-    return piece[0]
+    # Check there is a piece at the square
+    try:
+        board_state[square]
+    except KeyError:
+        return False
+    else:
+        return True
