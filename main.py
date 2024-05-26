@@ -20,7 +20,7 @@ import input_processor as inp
 
 # Main run
 if __name__ == '__main__':
-    player_turn = "Black"
+    player_turn = "White"
     # Intialise Pieces
     # Print layout
     # While (no_winner)
@@ -32,6 +32,6 @@ if __name__ == '__main__':
     vis.clear_screen()
     vis.display_board(board_state)
     square, valid_moves = inp.input_select_piece(player_turn, board_state)
-    print(valid_moves)
+    vis.display_board(board_state)
 
 
