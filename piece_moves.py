@@ -17,19 +17,23 @@ def determine_valid_moves(square: (int, int), board_state: dict):
     """
     piece = board_state[square]
     piece_type = piece[1]  # Grab the piece type to determine movement rules
-    moves = []
 
     # generate list of valid moves based on piece
     if piece_type == "P":
-        moves = generate_pawn_moves(square, board_state)
+        return generate_pawn_moves(square, board_state)
     elif piece_type == "K":
-        moves = generate_king_moves(square, board_state)
+        return generate_king_moves(square, board_state)
     elif piece_type == "B":
-        moves = generate_bishop_moves(square, board_state)
+        return generate_bishop_moves(square, board_state)
     elif piece_type == "R":
-        moves = generate_rook_moves(square, board_state)
+        return generate_rook_moves(square, board_state)
+    elif piece_type == "Q":
+        return generate_queen_moves(square, board_state)
+    elif piece_type == "k":
+        return generate_knight_moves(square, board_state)
 
-    return moves
+    print("This Piece is not even a chess piece what????????")
+    return []
 
 
 def generate_pawn_moves(square: (int, int), board_state: dict):
@@ -154,11 +158,11 @@ def generate_rook_moves(square: (int, int), board_state: dict):
     1. In the given direction there is a tile with a piece on it that belongs to the same player, all possible moves
     AFTER AND INCLUDING the tile with the piece are not valid moves
     2. In the given direction there is a tile with a piece on it that belongs to the opponent player, all possible moves
-    AFTER the tile with the piece are not valid moves. The tile with the opponent piece is a valid move as the bishop
+    AFTER the tile with the piece are not valid moves. The tile with the opponent piece is a valid move as the rook
     can capture the piece.
-    :param square: Square where the Bishop is located
+    :param square: Square where the Rook is located
     :param board_state: State of the board
-    :return: List of moves that a Bishop can make from the square given a board state
+    :return: List of moves that a Rook can make from the square given a board state
     """
     row, col = square
     moves = []
@@ -185,5 +189,64 @@ def generate_rook_moves(square: (int, int), board_state: dict):
                     moves.append(move)  # Empty square so add and continue loop
             else:
                 break  # Reach end of board so stop loop
+
+    return moves
+
+
+def generate_queen_moves(square: (int, int), board_state: dict):
+    """
+    Create a list of moves that are valid for a Queen at a given square given a certain board state.
+    Queen movement consist of infinite tiles in all four straight directions (up, left, right, down) and all four
+    diagonal directions (up-left, up-right, down-left, down-right) until the end of the board, unless:
+    1. In the given direction there is a tile with a piece on it that belongs to the same player, all possible moves
+    AFTER AND INCLUDING the tile with the piece are not valid moves
+    2. In the given direction there is a tile with a piece on it that belongs to the opponent player, all possible moves
+    AFTER the tile with the piece are not valid moves. The tile with the opponent piece is a valid move as the queen
+    can capture the piece.
+    :param square: Square where the Queen is located
+    :param board_state: State of the board
+    :return: List of moves that a Queen can make from the square given a board state
+    """
+
+    # The queen is simply a combination of Rook and Bishop, so we will generate moves as such
+    moves = generate_rook_moves(square, board_state) + generate_bishop_moves(square, board_state)
+
+    return moves
+
+
+def generate_knight_moves(square: (int, int), board_state: dict):
+    """
+    Create a list of moves that are valid for a Knight at a given square given a certain board state.
+    Knight movement consist of 2 squares in one straight direction (up, down, left, right) followed by 1 square in the
+    perpendicular straight direction (if first move up/down, next must be left/right etc)
+    :param square: Square where the Knight is located
+    :param board_state: State of the board
+    :return: List of moves that a Knight can make from the square given a board state
+    """
+
+    row, col = square
+    moves = []
+    player = board_state[square][0]
+
+    # Apply 8 transforms to square to get all possible knight moves
+    transforms = [(1, 2),
+                  (1, -2),
+                  (-1, 2),
+                  (-1, -2),
+                  (2, 1),
+                  (2, -1),
+                  (-2, 1),
+                  (-2, -1)]
+
+    for transform in transforms:
+        row_change = transform[0]
+        col_change = transform[1]
+        move = (row + row_change, col + col_change)
+
+        if is_valid_square(move):
+            # Add move to list of moves if square is empty or has enemy piece to capture
+            if not has_piece(move, board_state) or (has_piece(move, board_state) and
+                                                    is_opponent_piece(player, board_state[move])):
+                moves.append(move)
 
     return moves
