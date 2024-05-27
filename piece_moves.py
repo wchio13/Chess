@@ -26,6 +26,8 @@ def determine_valid_moves(square: (int, int), board_state: dict):
         moves = generate_king_moves(square, board_state)
     elif piece_type == "B":
         moves = generate_bishop_moves(square, board_state)
+    elif piece_type == "R":
+        moves = generate_rook_moves(square, board_state)
 
     return moves
 
@@ -102,7 +104,8 @@ def generate_king_moves(square: (int, int), board_state: dict):
 def generate_bishop_moves(square: (int, int), board_state: dict):
     """
     Create a list of moves that are valid for a Bishop at a given square given a certain board state.
-    Bishop movement consist of infinite tiles in all four diagonal directions until the end of the board, unless:
+    Bishop movement consist of infinite tiles in all four diagonal directions (up-left, up-right, down-left, down-right)
+    until the end of the board, unless:
     1. In the given direction there is a tile with a piece on it that belongs to the same player, all possible moves
     AFTER AND INCLUDING the tile with the piece are not valid moves
     2. In the given direction there is a tile with a piece on it that belongs to the opponent player, all possible moves
@@ -116,7 +119,7 @@ def generate_bishop_moves(square: (int, int), board_state: dict):
     moves = []
     player = board_state[square][0]
 
-    # 4 possible directions, up-left, up-right, down-left and down-right. Premise to is keep adding moves in a
+    # 4 possible directions, up-left, up-right, down-left and down-right. Premise is to keep adding moves in a
     # direction until a square is met that is off the board or has a piece on it ^^^
     directions = [1, -1]
     for i in directions:
@@ -139,5 +142,48 @@ def generate_bishop_moves(square: (int, int), board_state: dict):
                         moves.append(move)  # Empty square so add and continue loop
                 else:
                     break  # Reach end of board so stop loop
+
+    return moves
+
+
+def generate_rook_moves(square: (int, int), board_state: dict):
+    """
+    Create a list of moves that are valid for a Rook at a given square given a certain board state.
+    Rook movement consist of infinite tiles in all four straight directions (up, left, right, down) until the end of
+    the board, unless:
+    1. In the given direction there is a tile with a piece on it that belongs to the same player, all possible moves
+    AFTER AND INCLUDING the tile with the piece are not valid moves
+    2. In the given direction there is a tile with a piece on it that belongs to the opponent player, all possible moves
+    AFTER the tile with the piece are not valid moves. The tile with the opponent piece is a valid move as the bishop
+    can capture the piece.
+    :param square: Square where the Bishop is located
+    :param board_state: State of the board
+    :return: List of moves that a Bishop can make from the square given a board state
+    """
+    row, col = square
+    moves = []
+    player = board_state[square][0]
+
+    transforms = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    for transform in transforms:
+        row_change = transform[0]
+        col_change = transform[1]
+        for step in range(1, 9):  # Add moves in direction till a piece is met
+            move = (row + row_change * step, col + col_change * step)
+            if is_valid_square(move):  # Check square is on the board
+                if has_piece(move, board_state):
+
+                    # Found enemy piece so add this square to moves and stop loop
+                    if is_opponent_piece(player, board_state[move]):
+                        moves.append(move)
+                        break
+
+                    # Found friendly piece so don't add this square and stop loop
+                    else:
+                        break
+                else:
+                    moves.append(move)  # Empty square so add and continue loop
+            else:
+                break  # Reach end of board so stop loop
 
     return moves
