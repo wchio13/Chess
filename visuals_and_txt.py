@@ -83,13 +83,24 @@ def create_dynamic_board_parts(board: dict):
 
 def message_piece_selection(player: str, piece: str, raw_square: str):
     """
-    Print out text prompting the user to input a square on the board in order to select a piece to move
+    Print out text stating what piece is selected on what square
     :param raw_square: The square as it was entered via input (e.g. H6)
     :param piece: The piece in board_state form (e.g. BR)
     :param player: The player whose turn it is
     """
     piece = piece_translations[piece[1]]
-    print(f"{player} has selected {piece} on {raw_square}")
+    print(f"{player} has selected {piece} on {raw_square}\n")
+
+
+def message_piece_move_to(player: str, piece: str, raw_square: str):
+    """
+    Print out text stating where the selected piece was moved to
+    :param raw_square: The square as it was entered via input (e.g. H6)
+    :param piece: The piece in board_state form (e.g. BR)
+    :param player: The player whose turn it is
+    """
+    piece = piece_translations[piece[1]]
+    print(f"{player} has moved {piece} to {raw_square}\n")
 
 
 def clear_screen():

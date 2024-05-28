@@ -55,3 +55,15 @@ def has_piece(square: (int, int), board_state: dict):
         return False
     else:
         return True
+
+
+def next_player_turn(player: str):
+    """
+    Helper function to cycle the current players turn between White and Black
+    :param player: The current player's turn
+    :return: The next player's turn
+    """
+    if player == "White":
+        return "Black"
+    else:
+        return "White"

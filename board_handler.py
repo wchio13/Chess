@@ -38,3 +38,20 @@ def initialise_board():
         for col in range(8):
             board_state[(row, col)] = colour + pieces.pop()
     return board_state
+
+
+def perform_move(board_state: dict, from_move: (int, int), to_move: (int, int)):
+    """
+    Given a board state, this will move whatever piece is on the square 'from_move' to the square 'to_move'.
+    If there is an existing piece on the square 'to_move', the piece is 'captured'. It is assumed both squares are
+    validated beforehand.
+    :param board_state: The state of the board
+    :param from_move: The square where the selected piece is originally located
+    :param to_move: The square where the selected piece is moved to
+    :return: New board_state with the move performed
+    """
+    piece = board_state[from_move]
+    board_state.pop(from_move)
+    board_state[to_move] = piece
+
+    return board_state
