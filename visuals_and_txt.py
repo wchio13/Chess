@@ -22,7 +22,7 @@ import os
 
 # Translations for piece letters
 piece_translations = {"R": "Rook",
-                      "k": "Knight",
+                      "N": "Knight",
                       "B": "Bishop",
                       "K": "King",
                       "Q": "Queen",

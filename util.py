@@ -67,3 +67,26 @@ def next_player_turn(player: str):
         return "Black"
     else:
         return "White"
+
+
+def get_distance(square1: (int, int), square2: (int, int), direction: str):
+    """
+    Calculates the distance between two squares (e.g. distance of length '1' between G7 and G8, distance of length
+    '2' between B1 and D3)
+    :param square1: First square
+    :param square2: Second square
+    :param direction: Either 'S' for straight direction or 'D' for diagonal direction
+    :return: distance between the two squares as an int
+    """
+
+    r1, c1 = square1
+    r2, c2 = square2
+
+    # Calculate length between two squares in a straight direction, one coordinate will stay the same, whilst the
+    # other will change, that changing coord difference is the distance
+    if direction == "S":
+        return abs((r1 - r2) + (c1 - c2))
+    # For diagonal direction, both coordinates will change by the same magnitude, and that magnitude change is the
+    # distance
+    elif direction == "D":
+        return (abs(r1 - r2) + abs(c1 - c2)) / 2

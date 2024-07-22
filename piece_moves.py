@@ -29,7 +29,7 @@ def determine_valid_moves(square: (int, int), board_state: dict):
         return generate_rook_moves(square, board_state)
     elif piece_type == "Q":
         return generate_queen_moves(square, board_state)
-    elif piece_type == "k":
+    elif piece_type == "N":
         return generate_knight_moves(square, board_state)
 
     print("This Piece is not even a chess piece what????????")
