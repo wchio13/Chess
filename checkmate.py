@@ -5,8 +5,8 @@ Created: 09/06/24
 Handles the checking of the King to determine if they are in check
 """
 
-from piece_moves import generate_rook_moves, generate_bishop_moves
-from util import get_distance, is_opponent_piece, has_piece
+from piece_moves import generate_rook_moves, generate_bishop_moves, generate_knight_moves
+from util import get_distance, is_opponent_piece, has_piece, player_from_square
 
 
 def is_check(player: str, board_state: dict):
@@ -33,7 +33,7 @@ def is_check(player: str, board_state: dict):
 
     king_square = find_king(player, board_state)
 
-    return check_via_straight(king_square, board_state) or check_via_diagonal(king_square, board_state)
+    return check_via_straight(king_square, board_state) or check_via_diagonal(king_square, board_state) or check_via_knight(king_square, board_state)
 
 
 def find_king(player: str, board_state: dict):
@@ -63,8 +63,7 @@ def check_via_straight(king_square: (int, int), board_state: dict):
     """
 
     potential_checks = generate_rook_moves(king_square, board_state)
-    king_piece = board_state[king_square]
-    player = king_piece[0]
+    player = player_from_square(king_square, board_state)
 
     for check_square in potential_checks:
         pieces_that_can_check = ["R", "Q"] # Rook & Queen can check on straight direction, also King if distance is 1
@@ -91,8 +90,7 @@ def check_via_diagonal(king_square: (int, int), board_state: dict):
     """
 
     potential_checks = generate_bishop_moves(king_square, board_state)
-    king_piece = board_state[king_square]
-    player = king_piece[0]
+    player = player_from_square(king_square, board_state)
 
     for check_square in potential_checks:
         pieces_that_can_check = ["B", "Q"] # Bishop & Queen can check on straight direction, also King if distance is 1
@@ -110,8 +108,48 @@ def check_via_diagonal(king_square: (int, int), board_state: dict):
             piece = board_state[check_square]
             piece_type = piece[1]
 
-            # Piece is a Bishop or Queen (or King if distance is 1)
+            # Piece is a Bishop or Queen (or King if distance is 1 or Pawn if correct direction)
             if is_opponent_piece(player, piece) and piece_type in pieces_that_can_check:
                 return True
 
     return False
+
+
+def check_via_knight(king_square: (int, int), board_state: dict):
+    """
+    Determine whether King is in check via a Knight
+    :param king_square: The square where the King is on
+    :param board_state: The state of the board
+    :return: return True if King is in check via a knight, otherwise return False
+    """
+
+    potential_checks = generate_knight_moves(king_square, board_state)
+    player = player_from_square(king_square, board_state)
+
+    for check_square in potential_checks:
+
+        if has_piece(check_square, board_state):
+            piece = board_state[check_square]
+            piece_type = piece[1]
+
+            if is_opponent_piece(player, piece) and piece_type == "N":
+                return True
+
+    return False
+
+
+def generate_moves_that_remove_check(king_square: (int, int), board_state: dict):
+    """
+    Generate a dict of all pieces and their specific moves that will get the player's King out of check
+    :param king_square: square where the King is on
+    :param board_state: The state of the board
+    :return: A dict of lists {piece: (int, int)}, the keys are pieces which get the players King out of checks with the
+    values being a list of tuples that includes the moves this piece can make to remove check
+    """
+
+    player = player_from_square(king_square, board_state)
+    # Get all players pieces
+    # Genereate ALL moves possible
+    # Perform each move and check if still in check
+    # build dict of pieces and moves which remove check
+    # if dict is empty, its checkmate

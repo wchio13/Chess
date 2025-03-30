@@ -90,3 +90,16 @@ def get_distance(square1: (int, int), square2: (int, int), direction: str):
     # distance
     elif direction == "D":
         return (abs(r1 - r2) + abs(c1 - c2)) / 2
+
+
+def player_from_square(square: (int, int), board_state: dict):
+    """
+    Based on the square with a piece given, determine what player it belongs to (Only use when square has a piece)
+    :param square: The square where the piece is on
+    :param board_state: The state of the board
+    :return: The player for whom the piece on the input square belongs to
+    """
+    piece = board_state[square]
+    player = piece[0]
+
+    return player
