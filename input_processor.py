@@ -9,10 +9,11 @@ from piece_moves import determine_valid_moves
 from visuals_and_txt import message_piece_selection, message_piece_move_to
 
 
-def input_select_piece(player: str, board_state: dict):
+def input_select_piece(player: str, board_state: dict, in_check):
     """
     Takes user input to determine the piece and square that they want to move. This piece returned is a valid square
     that has a piece belonging to the player
+    :param in_check:
     :param player: The player's turn
     :param board_state:  The state of the board
     :return: The square as it is in board_state and a list of the pieces valid moves
@@ -23,7 +24,7 @@ def input_select_piece(player: str, board_state: dict):
     # Keep asking for input until valid square is received
     while piece is None:
 
-        raw_square = input(player + ": Choose a piece to move (Enter the square coordinates e.g. G7)\n").capitalize()
+        raw_square = get_piece_selection_input(player)
         square = validate_input_square(raw_square)
 
         if square:
@@ -42,16 +43,20 @@ def input_select_piece(player: str, board_state: dict):
                     # Now determine the moves the piece can make, reject input if piece has no valid moves
                     valid_moves = determine_valid_moves(square, board_state)
                     if not valid_moves:
-                        print("Invalid Piece: That Piece has no possible moves\n")
+                        if in_check:
+                            print("Invalid Piece: That Piece has no moves that can remove check\n")
+                        else:
+                            print("Invalid Piece: That Piece has no possible moves\n")
                         piece = None
 
     message_piece_selection(player, piece, raw_square)
     return square, piece, valid_moves
 
 
-def input_move_to(player: str, piece: str, valid_moves: [(int, int)]):
+def input_move_to(player: str, piece: str, valid_moves: [(int, int)], in_check):
     """
     Takes user input to determine where to move their selected piece towards.
+    :param in_check: Gives player different message if the move does not remove check
     :param piece: The piece selected
     :param valid_moves: List of valid moves for a given piece
     :param player: The player's turn
@@ -69,7 +74,10 @@ def input_move_to(player: str, piece: str, valid_moves: [(int, int)]):
                 message_piece_move_to(player, piece, raw_square)
                 return move_to_square
             else:
-                print("Invalid Move: That is not a possible move for that piece\n")
+                if in_check:
+                    print("Invalid Move: That move is not possible for that piece or it does not remove check\n")
+                else:
+                    print("Invalid Move: That is not a possible move for that piece\n")
                 move_to_square = None
 
 
@@ -107,3 +115,11 @@ def validate_input_square(square: str):
     return number, letter
 
 
+def get_piece_selection_input(player):
+    """
+    Get the input for the square where the piece they select is on
+    :param player: player who's turn it is to select a piece
+    :return: raw input from player
+    """
+    raw_square = input(player + ": Choose a piece to move (Enter the square coordinates e.g. G7)\n").capitalize()
+    return raw_square

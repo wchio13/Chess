@@ -4,36 +4,46 @@ Created: 26/05/24
 
 Handles the generation of moves that each chess piece can perform
 """
-
-from util import get_direction, is_valid_square, is_opponent_piece, has_piece
+from util import get_direction, is_valid_square, is_opponent_piece, has_piece, player_from_square
 
 
 def determine_valid_moves(square: (int, int), board_state: dict):
+    from checkmate import move_causes_check # Import here to avoid circular import issue
     """
-    Determines the valid moves a selected piece can make
+    Determines the valid moves a selected piece can make.
+    
+    NOTE: This also deems moves which cause check as invalid. THEREFORE, in the scenario where the player is already
+    in check and this function is called, the resultant moves allowed will only be those that undo the check.
+    
     :param square: Square with the player-selected piece
     :param board_state: The state of the board
     :return: A list of valid moves the selected piece can make. Will return an empty list if there is no valid moves
     """
     piece = board_state[square]
     piece_type = piece[1]  # Grab the piece type to determine movement rules
+    player = player_from_square(square, board_state)
 
     # generate list of valid moves based on piece
     if piece_type == "P":
-        return generate_pawn_moves(square, board_state)
+        possible_moves = generate_pawn_moves(square, board_state)
     elif piece_type == "K":
-        return generate_king_moves(square, board_state)
+        possible_moves = generate_king_moves(square, board_state)
     elif piece_type == "B":
-        return generate_bishop_moves(square, board_state)
+        possible_moves = generate_bishop_moves(square, board_state)
     elif piece_type == "R":
-        return generate_rook_moves(square, board_state)
+        possible_moves = generate_rook_moves(square, board_state)
     elif piece_type == "Q":
-        return generate_queen_moves(square, board_state)
+        possible_moves = generate_queen_moves(square, board_state)
     elif piece_type == "N":
-        return generate_knight_moves(square, board_state)
+        possible_moves = generate_knight_moves(square, board_state)
 
-    print("This Piece is not even a chess piece what????????")
-    return []
+    # do final filtering to ensure none of these moves cause check
+    final_move_list = []
+    for move in possible_moves:
+        if not move_causes_check(player, board_state, square, move):
+            final_move_list.append(move)
+
+    return final_move_list
 
 
 def generate_pawn_moves(square: (int, int), board_state: dict):

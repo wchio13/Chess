@@ -18,7 +18,7 @@ from board_handler import initialise_board, perform_move
 from input_processor import input_select_piece, input_move_to
 from visuals_and_txt import clear_screen, display_board
 from util import next_player_turn
-from checkmate import find_king, is_check, generate_moves_that_remove_check
+from checkmate import find_king, is_check, is_in_checkmate, move_causes_check
 
 # Main run
 if __name__ == '__main__':
@@ -32,27 +32,20 @@ if __name__ == '__main__':
 
     while not checkmate:
         if is_check(player_turn, board_state):
-            uncheck_moves = generate_moves_that_remove_check(find_king(player_turn, board_state), board_state)
-            if uncheck_moves:
-                in_check = True
-                print(f"{player_turn} is in Check!")
+            king = find_king(player_turn, board_state)
+            checkmate = is_in_checkmate(king, board_state)
+            if checkmate:
+                break
                 # There is no moves that remove check, therefore it is checkmate
             else:
-                checkmate = True
+                in_check = True
+                print(f"{player_turn} is in Check!\n")
 
         # Piece selection
-        from_square, selected_piece, valid_moves = input_select_piece(player_turn, board_state)
-        if in_check and not checkmate:
-            while from_square not in uncheck_moves.keys():
-                print("Invalid selection. That piece cannot prevent check")
-                from_square, selected_piece, valid_moves = input_select_piece(player_turn, board_state)
+        from_square, selected_piece, valid_moves = input_select_piece(player_turn, board_state, in_check)
 
         # Piece movement
-        to_square = input_move_to(player_turn, selected_piece, valid_moves)
-        if in_check and not checkmate:
-            while to_square not in uncheck_moves[from_square]:
-                print("Invalid move. King is still in check")
-                to_square = input_move_to(player_turn, selected_piece, valid_moves)
+        to_square = input_move_to(player_turn, selected_piece, valid_moves, in_check)
 
         board_state = perform_move(board_state, from_square, to_square)
         display_board(board_state)

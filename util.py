@@ -103,3 +103,4 @@ def player_from_square(square: (int, int), board_state: dict):
     player = piece[0]
 
     return player
+

@@ -55,3 +55,17 @@ def perform_move(board_state: dict, from_move: (int, int), to_move: (int, int)):
     board_state[to_move] = piece
 
     return board_state
+
+
+def simulate_move(board_state: dict, square: (int, int), move: (int,int)):
+    """
+    Create a copy of board state and perform a move on it
+    :param board_state: The state of the board
+    :param square: The square where the piece is on
+    :param move: The square to move the piece to
+    :return: a board state that is a copy of the current with the move performed
+    """
+    simulated_board_state = board_state.copy()  # make a copy of board
+    simulated_board_state = perform_move(simulated_board_state, square, move)
+
+    return simulated_board_state
