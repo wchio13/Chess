@@ -250,3 +250,16 @@ def generate_knight_moves(square: (int, int), board_state: dict):
                 moves.append(move)
 
     return moves
+
+
+""" PLACEHOLDER FUNCTIONS """
+def perform_castling():
+    return None
+
+
+def perform_promotion():
+    return None
+
+
+def perform_enpassant():
+    return None

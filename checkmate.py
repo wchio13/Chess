@@ -4,8 +4,8 @@ Created: 09/06/24
 
 Handles the checking of the King to determine if they are in check
 """
-
-from piece_moves import generate_rook_moves, generate_bishop_moves, generate_knight_moves
+from board_handler import perform_move
+from piece_moves import generate_rook_moves, generate_bishop_moves, generate_knight_moves, determine_valid_moves
 from util import get_distance, is_opponent_piece, has_piece, player_from_square
 
 
@@ -140,14 +140,32 @@ def check_via_knight(king_square: (int, int), board_state: dict):
 
 def generate_moves_that_remove_check(king_square: (int, int), board_state: dict):
     """
-    Generate a dict of all pieces and their specific moves that will get the player's King out of check
+    Generate a dict of all pieces and their specific moves that will get the player's King out of check. This should
+    only be called when the player is CURRENTLY in check.
+
     :param king_square: square where the King is on
     :param board_state: The state of the board
-    :return: A dict of lists {piece: (int, int)}, the keys are pieces which get the players King out of checks with the
+    :return: A dict of lists {piece: [(int, int)]}, the keys are pieces which get the players King out of checks with the
     values being a list of tuples that includes the moves this piece can make to remove check
     """
 
     player = player_from_square(king_square, board_state)
+    uncheckmate_pieces = {}
+    for square in board_state.keys():
+        # scan board and get all pieces which belong to player
+        if player_from_square(square, board_state) == player:
+            possible_moves = determine_valid_moves(square, board_state)
+            for move in possible_moves:
+                # want to perform each move and see if we are still in check
+                simulated_board_state = board_state.copy() # make a copy of board
+                simulated_board_state = perform_move(simulated_board_state, square, move)
+                if not is_check(player, simulated_board_state):
+                    if square not in uncheckmate_pieces.keys():
+                        uncheckmate_pieces[square] = []
+                    uncheckmate_pieces[square].append(move)
+
+    return uncheckmate_pieces
+
     # Get all players pieces
     # Genereate ALL moves possible
     # Perform each move and check if still in check

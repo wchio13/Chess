@@ -30,7 +30,7 @@ def initialise_board():
     :return: Board state with starting piece positions
     """
     board_state = {}
-    pieces = list("RNBQKBNRPPPPPPPPPPPPPPPPRNBQKBNR")  # Order of piece creation from left to right going downwards
+    pieces = list("RNBKQBNRPPPPPPPPPPPPPPPPRNBKQBNR")  # Order of piece creation from left to right going downwards
     colours = list("WWBB")  # colours, 2sets of black and white
     rows = [0, 1, 6, 7]  # rows occupied by pieces
     for row in rows:

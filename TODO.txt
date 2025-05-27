@@ -1,0 +1,5 @@
+-Prevent player from making move that puts them selves in check
+-Castling
+-En passant
+-Promotion
+-Allow player to deselect the piece and select another
