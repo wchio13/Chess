@@ -8,6 +8,7 @@ from board_handler import simulate_move
 from piece_moves import generate_rook_moves, generate_bishop_moves, generate_knight_moves, determine_valid_moves
 from util import get_distance, is_opponent_piece, has_piece, player_from_square
 
+
 def is_check(player: str, board_state: dict):
     """
     Determine whether the current player is in check (i.e. The current player's King is in danger of being captured)
@@ -137,10 +138,11 @@ def check_via_knight(king_square: (int, int), board_state: dict):
     return False
 
 
-def is_in_checkmate(king_square: (int, int), board_state: dict):
+def player_has_no_moves(king_square: (int, int), board_state: dict):
     """
-    Determine whether the player is in checkmate by simulating every single possible move they can make. This should
-    only be called when the player is CURRENTLY in check.
+    Determine whether the player has any possible, non-checking, valid moves by simulating every single possible move
+    they can make. Used to determine if player is checkmate (if this returns False and player is currently check)
+    or if stalemate has occurred (if this returns False and player IS NOT in check).
 
     :param king_square: square where the King is on
     :param board_state: The state of the board
