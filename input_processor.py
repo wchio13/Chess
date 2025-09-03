@@ -123,3 +123,17 @@ def get_piece_selection_input(player):
     """
     raw_square = input(player + ": Choose a piece to move (Enter the square coordinates e.g. G7)\n").capitalize()
     return raw_square
+
+def get_piece_for_promotion(player):
+    """
+    :param player: player who's turn it is to select a piece
+    :return: The type of piece the player wants to promote the pawn to
+    """
+    promotion_piece = None
+    valid_inputs = ["Q", "N", "B", "R"]
+    while promotion_piece not in valid_inputs:
+        promotion_piece = input(player + ": What piece should the pawn be promoted to?"
+                                     "\n Type in either (Queen: Q, Knight: N, Bishop: B, Rook: R)\n").capitalize()
+        if promotion_piece not in valid_inputs:
+            print("Not valid input.\n")
+    return promotion_piece
